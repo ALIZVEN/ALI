@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>ALIZ</title>
+
+  <style>
+    :root{
+      --bg:#f6f0e4; 
+      --card:#ffffff; 
+      --accent:#000000; 
+      --muted:#6b7280;
+      --gap:16px; 
+      --radius:12px;
+      font-family: "Montserrat", sans-serif;
+    }
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:#111;
+    }
+
+    header{
+      background:#ffffff;
+      padding:12px 24px;
+      border-bottom:1px solid #eee; 
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000; 
+    }
+
+    main {
+      padding-top: 100px; /* altura del header */
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-link img {
+      height: 70px;
+      width: auto;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .logo-link img:hover {
+      transform: scale(1.1);
+    }
+
+    .header-text {
+      font-size: 20px;
+      font-weight: 500;
+      color: #000;
+      text-align: center;
+      flex: 1;
+    }
+
+    /* Dropdown */
+    .dropdown {
+      position: relative;
+      font-size: 14px;
+    }
+
+    .dropdown-btn {
+      background: #ffffff;
+      color: #000000;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .dropdown-list {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      list-style: none;
+      padding: 0;
+      margin: 5px 0 0;
+      width: 150px;
+      z-index: 100;
+    }
+
+    .dropdown-list li {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .dropdown-list li:hover {
+      background: #f5f5f5;
+    }
+
+    .dropdown.open .dropdown-list {
+      display: block;
+    }
+
+    /* Hero line */
+    .hero-line {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); 
+      width: 100%;
+      height: 550px; 
+      overflow: hidden;
+      margin-top: 0px; /* espacio para header */
+    }
+
+    .hero-item {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-item img,
+    .hero-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    /* Catalogo de productos */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* 4 productos por fila */
+      gap: 32px;
+      max-width: 1400px;
+      margin: 40px auto; /* espacio arriba y abajo */
+      padding: 0 20px;
+    }
+
+    .product-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .product-card {
+      width: 100%;
+      padding-top: 100%; /* ratio cuadrado */
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: var(--card);
+    }
+
+    .product-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .product-image {
+      position: absolute;
+      background-color: #ffffff;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .product-image img.primary {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* lente completo visible */
+      object-position: center;
+      transition: opacity 0.3s ease;
+    }
+
+    .product-image img.hover-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* modelo puede recortarse */
+      object-position: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .product-card:hover .hover-img {
+      opacity: 1;
+    }
+
+    .product-card:hover .primary {
+      opacity: 0;
+    }
+
+    /* redireccion de pagina */
+    .product-wrapper a {
+      display: block;
+      text-decoration: none; /* quita subrayado */
+      color: inherit; /* mantiene colores */
+    }
+
+    /* Nombre y precio fuera de la tarjeta */
+    .product-info {
+      text-align: center;
+      margin-top: 12px; /* espacio entre imagen y texto */
+    }
+
+    .product-name {
+      font-weight: 600;
+      font-size: 16px;
+      margin: 0;
+      color: #111;
+    }
+
+    .product-price {
+      color: var(--accent);
+      font-weight: 500;
+      margin: 4px 0 0 0;
+    }
+
+  .carousel-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 50px;
+  overflow: hidden;
+}
+
+.carousel {
+  overflow: hidden;
+  width: 100%;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.carousel-item {
+  min-width: 230px; /* ajusta según quieras más o menos visibles */
+  margin-right: 0px;
+  flex-shrink: 0;
+  border-radius: 0; /* bordes cuadrados */
+  height: 350px; /* altura fija */
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+/* Flechas invisibles */
+.carousel-arrow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50px;
+  background: rgba(0,0,0,0); /* invisible */
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.carousel-arrow.left { left: 0; }
+.carousel-arrow.right { right: 0; }
+
+/* Footer */
+
+.site-footer {
+  background: #111; /* fondo oscuro */
+  color: #fff;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.footer-container p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 70px;
+}
+
+.footer-socials a img {
+  width: 50px;
+  height: 50px;
+  transition: transform 0.2s ease;
+}
+
+.footer-socials a img:hover {
+  transform: scale(1.2);
+}
+.envio-gratis {
+  background-color: #f6f0e4;   /* fondo negro elegante */
+  color: #000000;              /* texto blanco */
+  padding: 10px 0;
+  overflow: hidden;         /* oculta lo que sale */
+  white-space: nowrap;      /* evita saltos de línea */
+  border-bottom: 1px solid #eee; /* opcional, separador */
+}
+
+.marquee span {
+  display: inline-block;
+  padding-left: 10%; /* arranca fuera de pantalla */
+  animation: scroll 40s linear infinite; 
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 5px;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+
+
+    /* Responsive */
+    @media (max-width:768px) {
+  .carousel-item { min-width: 150px; height: 120px; }
+    @media (max-width:1024px){ 
+      .catalog-grid { grid-template-columns: repeat(3, 1fr); } 
+    }
+    @media (max-width:768px){ 
+      .catalog-grid { grid-template-columns: repeat(2, 1fr); } 
+    }
+    @media (max-width:480px){ 
+      .catalog-grid { grid-template-columns: 1fr; } 
+    }
+  @media (max-width:640px){
+  .footer-container {
+    gap: 8px;
+  }
+  .footer-socials a img {
+    width: 25px;
+    height: 25px;
+  }
+}}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-container">
+      <a href="pr.html" class="logo-link">
+        <img src="imagenes/LOGOBLANCO.jpeg" alt="logo aliz.ven">
+      </a>
+      <div class="header-text"><b>¡Todos nuestros diseños se pueden formular!</b></div>
+      <div class="dropdown" id="dropdown">
+        <div class="dropdown-btn" id="dropdownBtn">Colección: Todas ▾</div>
+        <ul class="dropdown-list">
+          <li data-value="all">Todas</li>
+          <li data-value="retro">Retro</li>
+          <li data-value="classic">Classic</li>
+          <li data-value="sport">Sport</li>
+        </ul>
+      </div>
+    </div>
+    <section class="envio-gratis">
+  <div class="marquee">
+    <span>● Envío gratis a todo el país   ●   Envío gratis a todo el país   ●   Envío gratis a todo el país   ●   Envío gratis a todo el país    ●   Envío gratis a todo el país   ●   Envío gratis a todo el país   ●   Envío gratis a todo el país   ● </span>
+  </div>
+</section>
+  </header>
+
+  <main>
+    <section class="hero-line">
+      <div class="hero-item">
+        <video autoplay muted loop>
+          <source src="imagenes/JOSE-VIDEO.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="hero-item">
+        <img src="imagenes/ANDREINA.jpeg" alt="Foto 1">
+      </div>
+      <div class="hero-item">
+        <video autoplay muted loop>
+          <source src="imagenes/video-carro.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="hero-item">
+        <img src="imagenes/Robert-clasico.jpeg" alt="Foto 2">
+      </div>
+    </section>
+
+      
+    <section class="catalog-grid">
+  <!-- Producto 1 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='CLASICO.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/CLASICO.jpeg" alt="CLASICO">
+        <img class="hover-img" src="imagenes/Robert-clasico.jpeg" alt="Modelo usando CLASICO">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">CLASICO</h3>
+      <p class="product-price">$45</p>
+    </div>
+  </div>
+
+  <!-- Producto 2 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='AMARA.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/AMARA.jpeg" alt="AMARA">
+        <img class="hover-img" src="imagenes/ASTETIK.jpeg" alt="Modelo usando AMARA">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">AMARA</h3>
+      <p class="product-price">$60</p>
+    </div>
+  </div>
+
+  <!-- Producto 3 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='RIVER.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/RIVER.jpeg" alt="RIVER">
+        <img class="hover-img" src="imagenes/ANDREINA.jpeg" alt="Modelo usando RIVER">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">RIVER</h3>
+      <p class="product-price">$75</p>
+    </div>
+  </div>
+
+  <!-- Producto 4 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='GALA.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/GALA.png" alt="GALA">
+        <img class="hover-img" src="imagenes/MANDIBULA.jpeg" alt="Modelo usando GALA">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">GALA</h3>
+      <p class="product-price">$75</p>
+    </div>
+  </div>
+    
+  <!-- Producto 1 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='clasico.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/SPACES.jpeg" alt="CLASICO">
+        <img class="hover-img" src="imagenes/ASTETIK.jpeg" alt="Modelo usando CLASICO">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">SPACES</h3>
+      <p class="product-price">$45</p>
+    </div>
+  </div>
+
+  <!-- Producto 2 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='amara.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/DORIAN.jpeg" alt="AMARA">
+        <img class="hover-img" src="imagenes/CHICO.jpeg" alt="Modelo usando AMARA">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">DORIAN</h3>
+      <p class="product-price">$60</p>
+    </div>
+  </div>
+
+  <!-- Producto 3 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='river.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/RED.png" alt="RIVER">
+        <img class="hover-img" src="imagenes/TXTA.jpeg" alt="Modelo usando RIVER">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">RED</h3>
+      <p class="product-price">$75</p>
+    </div>
+  </div>
+
+  <!-- Producto 4 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='gala.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/SAGE.jpeg" alt="GALA">
+        <img class="hover-img" src="imagenes/SAGE-CHICA.jpeg" alt="Modelo usando GALA">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">SAGE</h3>
+      <p class="product-price">$75</p>
+    </div>
+  </div>
+
+  <!-- Producto 1 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='clasico.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/K.jpeg" alt="CLASICO">
+        <img class="hover-img" src="imagenes/K1.jpeg" alt="Modelo usando CLASICO">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">K</h3>
+      <p class="product-price">$45</p>
+    </div>
+  </div>
+
+  <!-- Producto 2 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='amara.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/SASHA.jpeg" alt="AMARA">
+        <img class="hover-img" src="imagenes/CALIFORNIA.jpeg" alt="Modelo usando AMARA">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">SASHA</h3>
+      <p class="product-price">$60</p>
+    </div>
+  </div>
+
+  <!-- Producto 3 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='river.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/ONYX.jpeg" alt="RIVER">
+        <img class="hover-img" src="imagenes/RUBIA.jpeg" alt="Modelo usando RIVER">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">ONYX</h3>
+      <p class="product-price">$75</p>
+    </div>
+  </div>
+
+  <!-- Producto 4 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='gala.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/SPACES.jpeg" alt="GALA">
+        <img class="hover-img" src="imagenes/EDNA-MODA.jpeg" alt="Modelo usando GALA">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">SPACES</h3>
+      <p class="product-price">$75</p>
+    </div>
+  </div>
+
+  <!-- Producto 1 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='clasico.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/F.jpeg" alt="CLASICO">
+        <img class="hover-img" src="imagenes/F1.jpeg" alt="Modelo usando CLASICO">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">F</h3>
+      <p class="product-price">$45</p>
+    </div>
+  </div>
+
+  <!-- Producto 2 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='amara.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/VIBE.jpeg" alt="AMARA">
+        <img class="hover-img" src="imagenes/PELO-LINDO.jpeg" alt="Modelo usando AMARA">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">VIBE</h3>
+      <p class="product-price">$60</p>
+    </div>
+  </div>
+
+  <!-- Producto 3 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='river.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/SENOR1.jpeg" alt="RIVER">
+        <img class="hover-img" src="imagenes/RIVER-MODELO.jpeg" alt="Modelo usando RIVER">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">SENOR</h3>
+      <p class="product-price">$75</p>
+    </div>
+  </div>
+
+  <!-- Producto 4 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='gala.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/DHAMER.jpg" alt="GALA">
+        <img class="hover-img" src="imagenes/.jpeg" alt="Modelo usando GALA">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">GALA</h3>
+      <p class="product-price">$75</p>
+    </div>
+  </div>
+
+   <!-- Producto 1 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='clasico.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/BOB.jpeg" alt="CLASICO">
+        <img class="hover-img" src="imagenes/BOB1.jpeg" alt="Modelo usando CLASICO">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">BOB</h3>
+      <p class="product-price">$45</p>
+    </div>
+  </div>
+
+  <!-- Producto 2 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='amara.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/CAMU.jpeg" alt="AMARA">
+        <img class="hover-img" src="imagenes/CAMU1.jpeg" alt="Modelo usando AMARA">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">CAMU</h3>
+      <p class="product-price">$60</p>
+    </div>
+  </div>
+
+  <!-- Producto 3 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='river.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/CUAD.jpeg" alt="RIVER">
+        <img class="hover-img" src="imagenes/CUAD1.jpeg" alt="Modelo usando RIVER">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">CUAD</h3>
+      <p class="product-price">$75</p>
+    </div>
+  </div>
+
+  <!-- Producto 4 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='gala.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/FORT.jpeg" alt="GALA">
+        <img class="hover-img" src="imagenes/FORT1.jpeg" alt="Modelo usando GALA">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">FORT</h3>
+      <p class="product-price">$75</p>
+    </div>
+  </div>
+
+   <!-- Producto 1 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='clasico.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/LEMON.jpeg" alt="CLASICO">
+        <img class="hover-img" src="imagenes/LEMON2.jpeg" alt="Modelo usando CLASICO">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">LEMON</h3>
+      <p class="product-price">$45</p>
+    </div>
+  </div>
+
+  <!-- Producto 2 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='amara.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/PALI.jpeg" alt="AMARA">
+        <img class="hover-img" src="imagenes/PALI1.jpeg" alt="Modelo usando AMARA">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">PALI</h3>
+      <p class="product-price">$60</p>
+    </div>
+  </div>
+
+  <!-- Producto 3 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='river.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/ROCK.jpeg" alt="RIVER">
+        <img class="hover-img" src="imagenes/ROCK2.jpeg" alt="Modelo usando RIVER">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">ROCK</h3>
+      <p class="product-price">$75</p>
+    </div>
+  </div>
+
+  <!-- Producto 4 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='gala.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/PALU.jpeg" alt="GALA">
+        <img class="hover-img" src="imagenes/PALU1.jpeg" alt="Modelo usando GALA">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">PALU</h3>
+      <p class="product-price">$75</p>
+    </div>
+  </div>
+
+  <!-- Producto 1 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='clasico.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/TOGO.jpeg" alt="CLASICO">
+        <img class="hover-img" src="imagenes/TOGO1.jpeg" alt="Modelo usando CLASICO">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">TOGO</h3>
+      <p class="product-price">$45</p>
+    </div>
+  </div>
+
+  <!-- Producto 2 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='amara.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/TWO.jpeg" alt="AMARA">
+        <img class="hover-img" src="imagenes/TWO1.jpeg" alt="Modelo usando AMARA">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">TWO</h3>
+      <p class="product-price">$60</p>
+    </div>
+  </div>
+
+  <!-- Producto 3 -->
+  <div class="product-wrapper">
+    <div class="product-card" onclick="window.location.href='river.html'">
+      <div class="product-image">
+        <img class="primary" src="imagenes/X.jpeg" alt="RIVER">
+        <img class="hover-img" src="imagenes/X1.jpeg" alt="Modelo usando RIVER">
+      </div>
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">X</h3>
+      <p class="product-price">$75</p>
+    </div>
+  </div>
+</section>
+
+<section class="carousel-wrapper">
+  <div class="carousel">
+    <div class="carousel-track">
+      <div class="carousel-item"><img src="imagenes/MADRID.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/NATYKID.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/CAMILA-SUETER.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/ROMEL.jpeg" alt="CLASICO"></div>
+      <div class="carousel-item"><img src="imagenes/CHAMPAGE.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/ASTETIK.jpeg" alt="ASTETIK"></div>
+      <div class="carousel-item"><img src="imagenes/CALIFORNIA.jpeg" alt="CALI"></div>
+      <div class="carousel-item"><img src="imagenes/PIEDRAS.jpeg" alt="AMARA"></div>
+      <div class="carousel-item"><img src="imagenes/MANDIBULA.jpeg" alt="AMARA"></div>
+      <div class="carousel-item"><img src="imagenes/TRAJE-ROJO.jpeg" alt="RIVER"></div>
+      <div class="carousel-item"><img src="imagenes/CHICO.jpeg" alt="GALA"></div>
+      <div class="carousel-item"><img src="imagenes/CAMILA.jpeg" alt="GALA"></div>
+      <div class="carousel-item"><img src="imagenes/CAFE.jpeg" alt="CHICO"></div>
+      <div class="carousel-item"><img src="imagenes/EDNA-MODA.jpeg" alt="EDNA"></div>
+      <div class="carousel-item"><img src="imagenes/ANDREINA-ROJO.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/MESA.jpeg" alt="GALA"></div>
+      <div class="carousel-item"><img src="imagenes/ROMEL2.jpeg" alt="ROMEL"></div>
+      <div class="carousel-item"><img src="imagenes/MORENA.jpeg" alt="MORENA"></div>
+       <div class="carousel-item"><img src="imagenes/CHICA-CLASICO.jpeg" alt="CHICO"></div>
+       <div class="carousel-item"><img src="imagenes/SOFA.jpeg" alt="ANDREINA"></div>
+       <div class="carousel-item"><img src="imagenes/PELO-LINDO.jpeg" alt="ANDREINA"></div>
+       <div class="carousel-item"><img src="imagenes/robert-playa.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/OJOS.jpeg" alt="EDNA"></div>
+      <div class="carousel-item"><img src="imagenes/TXTA.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/CIELO.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/SAGE-CHICA1.jpeg" alt="ROMEL"></div>
+      <div class="carousel-item"><img src="imagenes/RUBIA.jpeg" alt="MORENA"></div>
+      <div class="carousel-item"><img src="imagenes/NATY.jpeg" alt="ANDREINA"></div>
+    
+      <!-- Repite imágenes para el bucle -->
+      <div class="carousel-item"><img src="imagenes/ROBERT-CAFE.jpeg" alt="CLASICO"></div>
+      <div class="carousel-item"><img src="imagenes/AUTOBUS.jpeg" alt="ASTETIK"></div>
+      <div class="carousel-item"><img src="imagenes/RIO.jpeg" alt="CALI"></div>
+      <div class="carousel-item"><img src="imagenes/PIEDRAS.jpeg" alt="AMARA"></div>
+      <div class="carousel-item"><img src="imagenes/ROMEL-QUITANDOSE.jpeg" alt="RIVER"></div>
+      <div class="carousel-item"><img src="imagenes/ROMEL-PONIENDOSE.jpeg" alt="MORENA"></div>
+      <div class="carousel-item"><img src="imagenes/robert-playa.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/robert-playa.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/robert-playa.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/robert-playa.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/robert-playa.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/robert-playa.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/CIELO.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/CIELO.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/CIELO.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/CIELO.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/CIELO.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/CIELO.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/CIELO.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/CIELO.jpeg" alt="ANDREINA"></div>
+       <div class="carousel-item"><img src="imagenes/CIELO.jpeg" alt="ANDREINA"></div>
+      <div class="carousel-item"><img src="imagenes/CIELO.jpeg" alt="ANDREINA"></div>
+   
+      
+  </div>
+  <!-- Flechas invisibles -->
+  <button class="carousel-arrow left"></button>
+  <button class="carousel-arrow right"></button>
+</section>
+  </main>
+
+  <script>
+    // Dropdown
+    const dropdown = document.getElementById('dropdown');
+    const dropdownBtn = document.getElementById('dropdownBtn');
+    const listItems = dropdown.querySelectorAll('.dropdown-list li');
+
+    dropdownBtn.addEventListener('click',()=>{ dropdown.classList.toggle('open'); });
+    listItems.forEach(li=>{
+      li.addEventListener('click',()=>{
+        dropdownBtn.textContent = 'Colección: ' + li.textContent + ' ▾';
+        dropdown.classList.remove('open');
+      });
+    });
+    document.addEventListener('click',e=>{
+      if(!dropdown.contains(e.target)) dropdown.classList.remove('open');
+    });
+
+    const track = document.querySelector('.carousel-track');
+const items = Array.from(track.children);
+const leftArrow = document.querySelector('.carousel-arrow.left');
+const rightArrow = document.querySelector('.carousel-arrow.right');
+
+let index = 0;
+const itemWidth = items[0].getBoundingClientRect().width + 16; // incluye margen
+const totalItems = items.length;
+
+// Función de movimiento
+function moveToIndex(idx) {
+  track.style.transform = `translateX(${-itemWidth * idx}px)`;
+}
+
+// Flechas
+leftArrow.addEventListener('click', () => {
+  index--;
+  if(index < 0) index = totalItems / 2 - 1; // bucle infinito
+  moveToIndex(index);
+});
+
+rightArrow.addEventListener('click', () => {
+  index++;
+  if(index >= totalItems / 2) index = 0; // bucle infinito
+  moveToIndex(index);
+});
+
+// Auto scroll cada 3 segundos
+setInterval(() => {
+  index++;
+  if(index >= totalItems / 2) index = 0;
+  moveToIndex(index);
+}, 3000);
+
+// Arrastre con mouse y touch
+let startX, isDragging = false;
+
+track.addEventListener('mousedown', e => {
+  startX = e.pageX;
+  isDragging = true;
+});
+
+track.addEventListener('mouseup', e => {
+  if(!isDragging) return;
+  const diff = e.pageX - startX;
+  if(diff > 30) { rightArrow.click(); }
+  else if(diff < -30) { leftArrow.click(); }
+  isDragging = false;
+});
+
+track.addEventListener('mouseleave', () => { isDragging = false; });
+
+track.addEventListener('touchstart', e => {
+  startX = e.touches[0].pageX;
+  isDragging = true;
+});
+
+track.addEventListener('touchend', e => {
+  if(!isDragging) return;
+  const diff = e.changedTouches[0].pageX - startX;
+  if(diff > 30) { rightArrow.click(); }
+  else if(diff < -30) { leftArrow.click(); }
+  isDragging = false;
+});
+  </script>
+  <!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-container">
+    <p>&copy; 2025 ALIZ. Todos los derechos reservados.</p>
+    <div class="footer-socials">
+      <a href="https://www.instagram.com/aliz.ven/" target="_blank" aria-label="Instagram">
+        <img src="imagenes/ig.png" alt="Instagram">
+      </a>
+      <a href="https://wa.me/04124233078" target="_blank" aria-label="WhatsApp">
+        <img src="imagenes/ws.png" alt="WhatsApp">
+      </a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

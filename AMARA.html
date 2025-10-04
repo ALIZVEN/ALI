@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>AMARA</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --accent: #000000;
+      --muted: #666;
+      --font-sans: 'Inter', system-ui, sans-serif;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--accent);
+      font-family: var(--font-sans);
+    }
+
+   header{background:#ffffff;
+      padding:12px 24px;
+      border-bottom:1px solid #eee; 
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;}
+    .header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* título a la izq, logo a la der */
+}
+
+/* Logo */
+.logo-link img {
+  height: 50px;        /* tamaño del logo */
+  width: auto;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.logo-link img:hover {
+  transform: scale(1.1); /* efecto al pasar el mouse */
+}
+  .header-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000;
+  text-align: center;
+  flex: 1;
+}
+    /* Layout principal */
+    .wrap {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .product-detail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    /* Columna izquierda */
+    .columna-fotos {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .foto-principal {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .foto-principal img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transition: transform .3s ease;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 2fr);
+      gap: 20px;
+      
+    }
+    .gallery img {
+      width: 90%;
+      object-fit: cover;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform .2s;
+      
+    }
+    .gallery img:hover { transform: scale(1.05); }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      flex-direction: column;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,.6);
+    }
+    .close-btn, .prev-btn, .next-btn {
+      position: absolute;
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .close-btn { top: 20px; right: 30px; }
+    .prev-btn { left: 40px; }
+    .next-btn { right: 40px; }
+
+    /* Columna derecha */
+    .info {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .info h1 { margin: 0; font-size: 2.2rem; font-weight: 700; }
+    .price { font-size: 1.6rem; font-weight: 600; }
+    .desc { color: var(--muted); line-height: 1.6; }
+    
+    img[src$=".png"] {
+  background-color: #fff;
+  border-radius: 12px;
+}
+
+    /* Responsive */
+    @media(max-width: 768px) {
+      .product-detail { grid-template-columns: 1fr; }
+      .foto-principal { height: 350px; }
+      .gallery { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+      <div class="header-container">
+    <!-- Logo izquierda -->
+    <a href="pr.html" class="logo-link">
+      <img src="imagenes/LOGOBLANCO.jpeg" alt="logo aliz.ven">
+    </a>
+
+    <!-- Texto centro -->
+    
+  </header>
+
+  <main class="wrap">
+    <div class="product-detail">
+      
+      <!-- Columna fotos -->
+      <div class="columna-fotos">
+        <div class="foto-principal">
+          <img id="fotoPrincipal" src="imagenes/AMARA.jpeg" alt="Lente modelo clásico">
+        </div>
+        <div class="gallery">
+          <img src="imagenes/AMARA.jpeg" alt="1">
+          <img src="imagenes/AMARA1.png" alt="2">
+          <img src="imagenes/AMARA2.png" alt="3">
+          <img src="imagenes/ANDREINA.jpeg" alt="4">
+
+        </div>
+      </div>
+
+      <!-- Columna info -->
+      <div class="info">
+        <h1>AMARA</h1>
+        <div class="price">$45</div>
+        <p class="desc">
+          Lentes de sol estilo retro con montura metálica ligera.<br>
+          Diseño clásico inspirado en los años 70, ideales para un look moderno y elegante.
+        </p>
+        <ul class="desc">
+          <li>Protección UV400</li>
+          <li>Montura metálica duradera</li>
+          <li>Lentes polarizadas</li>
+        </ul>
+        
+      </div>
+    </div>
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <span class="close-btn" id="close">&times;</span>
+    <span class="prev-btn" id="prev">&#10094;</span>
+    <img id="lightboxImg" src="" alt="">
+    <span class="next-btn" id="next">&#10095;</span>
+  </div>
+
+  <script>
+    const galleryImgs = document.querySelectorAll('.gallery img');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const closeBtn = document.getElementById('close');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+
+    let currentIndex = 0;
+
+    function showLightbox(index) {
+      currentIndex = index;
+      lightboxImg.src = galleryImgs[index].src;
+      lightbox.classList.add('open');
+    }
+
+    galleryImgs.forEach((img, index) => {
+      img.addEventListener('click', () => showLightbox(index));
+    });
+
+    closeBtn.addEventListener('click', () => lightbox.classList.remove('open'));
+
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % galleryImgs.length;
+      showLightbox(currentIndex);
+    });
+
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + galleryImgs.length) % galleryImgs.length;
+      showLightbox(currentIndex);
+    });
+
+    // cerrar si clic fuera de la imagen
+    lightbox.addEventListener('click', e => {
+      if (e.target === lightbox) lightbox.classList.remove('open');
+    });
+  </script>
+</body>
+</html>
